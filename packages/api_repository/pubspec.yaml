@@ -1,0 +1,13 @@
+name: api_repository
+description: Dart package that manages HTTP API calls for JogabiliApp
+version: 1.0.0
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  meta: ^1.2.4
+  equatable: ^2.0.2
+  http: ^0.12.2

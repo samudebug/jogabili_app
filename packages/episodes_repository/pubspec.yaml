@@ -1,0 +1,15 @@
+
+name: episodes_repository
+description: Dart package to manage Episodes related actions
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ">=2.11.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  meta: ^1.2.4
+  api_repository:
+    path: ../api_repository
