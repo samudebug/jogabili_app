@@ -10,4 +10,4 @@ dependencies:
     sdk: flutter
   meta: ^1.2.4
   equatable: ^2.0.2
-  http: ^0.12.2
+  http: ^0.13.1

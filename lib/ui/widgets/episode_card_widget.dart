@@ -1,21 +1,17 @@
+import 'package:episodes_repository/episodes_repository.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jogabili_app/blocs/player/player_bloc.dart';
 import 'package:jogabili_app/ui/constants/colors.dart';
+import 'package:jogabili_app/ui/player/player_page.dart';
+import 'package:palette_generator/palette_generator.dart';
 import '../constants/text_styles.dart';
 
 class EpisodeCard extends StatelessWidget {
-  EpisodeCard(
-      {@required this.title,
-      @required this.subTitle,
-      @required this.imageUrl,
-      @required this.pubDate,
-      @required this.description});
+  EpisodeCard({@required this.episode});
 
-  final String title;
-  final String subTitle;
-  final String imageUrl;
-  final String pubDate;
-  final String description;
+  final Episode episode;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -52,7 +48,8 @@ class EpisodeCard extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 8.0),
             child: bannerAndTitle(),
           ),
-          Padding(padding: EdgeInsets.only(bottom: 8), child: date()),
+          Padding(
+              padding: EdgeInsets.only(bottom: 8), child: dateAndPlay(context)),
           subTitleWidget(),
           Center(
             child: IconButton(
@@ -70,14 +67,14 @@ class EpisodeCard extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(16),
             child: Text(
-              title,
+              episode.title,
               style: TextStyles.episodeBlackTitleStyle,
             ),
           ),
           Padding(
             padding: EdgeInsets.all(16),
             child: Text(
-              description,
+              episode.description,
               style: TextStyles.episodeDescriptionTextStyle,
             ),
           )
@@ -95,7 +92,8 @@ class EpisodeCard extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 8.0),
             child: bannerAndTitle(),
           ),
-          Padding(padding: EdgeInsets.only(bottom: 8), child: date()),
+          Padding(
+              padding: EdgeInsets.only(bottom: 8), child: dateAndPlay(context)),
           subTitleWidget(),
           Center(
             child: IconButton(
@@ -123,7 +121,7 @@ class EpisodeCard extends StatelessWidget {
           Expanded(
             flex: 9,
             child: Text(
-              subTitle,
+              episode.subTitle,
               style: TextStyles.subTitleTextStyle,
             ),
           ),
@@ -132,7 +130,7 @@ class EpisodeCard extends StatelessWidget {
     );
   }
 
-  Padding date() {
+  Padding dateAndPlay(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -152,21 +150,65 @@ class EpisodeCard extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.all(6),
                   child: Text(
-                    pubDate,
+                    episode.pubDate,
                     style: TextStyles.dateTextStyle,
                   ),
                 )
               ],
             ),
           ),
-          FloatingActionButton(
-            child: Icon(
-              Icons.play_arrow,
-              color: Colors.white,
-            ),
-            mini: false,
-            onPressed: () {},
-          )
+          /*
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+                color: Color(0xFFFFEB3B),
+                borderRadius: BorderRadius.all(Radius.circular(50))),
+            child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PlayerPage(
+                            episode: episode,
+                          ),
+                      fullscreenDialog: true));
+                },
+                icon: Icon(
+                  Icons.play_arrow,
+                  color: Colors.white,
+                )),
+          )*/
+          Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                  color: Color(0xFFFFEB3B),
+                  borderRadius: BorderRadius.all(Radius.circular(50))),
+              child: IconButton(
+                  onPressed: () async {
+                    Color newBgColor =
+                        (await PaletteGenerator.fromImageProvider(
+                                NetworkImage(episode.imageUrl)))
+                            .dominantColor
+                            .color;
+                    context
+                        .read<PlayerBloc>()
+                        .add(PlayerPlay(episode, newBgColor));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PlayerPage(
+                                  episode: episode,
+                                  bgColor: newBgColor,
+                                  playerBloc: context.read<PlayerBloc>(),
+                                ),
+                            fullscreenDialog: true));
+                  },
+                  icon: Icon(
+                    Icons.play_arrow,
+                    color: Colors.white,
+                  ))),
         ],
       ),
     );
@@ -188,7 +230,7 @@ class EpisodeCard extends StatelessWidget {
                       topLeft: Radius.circular(5),
                       topRight: Radius.circular(5)),
                   image: DecorationImage(
-                      fit: BoxFit.fill, image: NetworkImage(imageUrl))),
+                      fit: BoxFit.fill, image: NetworkImage(episode.imageUrl))),
             ),
           ),
           Align(
@@ -202,7 +244,7 @@ class EpisodeCard extends StatelessWidget {
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
                       colors: [Colors.black, Colors.transparent])),
-              child: Text(title,
+              child: Text(episode.title,
                   style: TextStyles.episodeTitleStyle,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.start),

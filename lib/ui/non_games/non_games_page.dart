@@ -39,11 +39,7 @@ class _NonGamesPageState extends State<NonGamesPage> {
                 return index >= state.episodes.length
                     ? BottomLoader()
                     : EpisodeCard(
-                        title: state.episodes[index].title,
-                        subTitle: state.episodes[index].subTitle,
-                        imageUrl: state.episodes[index].imageUrl,
-                        pubDate: state.episodes[index].pubDate,
-                        description: state.episodes[index].description,
+                        episode: state.episodes[index],
                       );
               },
             ),
@@ -56,7 +52,6 @@ class _NonGamesPageState extends State<NonGamesPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _scrollController.dispose();
     super.dispose();
   }

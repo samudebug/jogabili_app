@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jogabili_app/blocs/episodes/episodes_bloc.dart';
 import 'package:jogabili_app/ui/widgets/episode_card_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jogabili_app/ui/widgets/player_miniature_widget.dart';
 
 class GamesPage extends StatefulWidget {
   @override
@@ -12,7 +13,6 @@ class GamesPage extends StatefulWidget {
 class _GamesPageState extends State<GamesPage> {
   final _scrollController = ScrollController();
   EpisodesBloc _episodesBloc;
-  List<Episode> episodes;
   @override
   void initState() {
     super.initState();
@@ -41,11 +41,7 @@ class _GamesPageState extends State<GamesPage> {
                 return index >= state.episodes.length
                     ? BottomLoader()
                     : EpisodeCard(
-                        title: state.episodes[index].title,
-                        subTitle: state.episodes[index].subTitle,
-                        imageUrl: state.episodes[index].imageUrl,
-                        pubDate: state.episodes[index].pubDate,
-                        description: state.episodes[index].description,
+                        episode: state.episodes[index],
                       );
               },
             ),
@@ -58,7 +54,6 @@ class _GamesPageState extends State<GamesPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _scrollController.dispose();
     super.dispose();
   }

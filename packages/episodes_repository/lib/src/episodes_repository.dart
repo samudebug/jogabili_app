@@ -12,10 +12,11 @@ class EpisodesRepository {
     try {
       List<Episode> result = [];
       List<dynamic> apiResponse = await apiRepository
-          .performGet('http://localhost:3000/episodes/games?page=$page');
+          .performGet('http://161.35.255.93:3000/episodes/games?page=$page');
       result = apiResponse.map((e) => Episode.fromJson(e)).toList();
       return result;
-    } on Exception {
+    } catch (e) {
+      print(e);
       throw EpisodesActionFailed();
     }
   }
@@ -23,8 +24,8 @@ class EpisodesRepository {
   Future<List<Episode>> getNonGamesEpisodes({int page = 1}) async {
     try {
       List<Episode> result = [];
-      List<dynamic> apiResponse = await apiRepository
-          .performGet('http://localhost:3000/episodes/non-games?page=$page');
+      List<dynamic> apiResponse = await apiRepository.performGet(
+          'http://161.35.255.93:3000/episodes/non-games?page=$page');
       result = apiResponse.map((e) => Episode.fromJson(e)).toList();
       return result;
     } on Exception {

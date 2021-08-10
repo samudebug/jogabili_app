@@ -2,8 +2,10 @@ import 'package:episodes_repository/episodes_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jogabili_app/blocs/episodes/episodes_bloc.dart';
+import 'package:jogabili_app/blocs/player/player_bloc.dart';
 import 'package:jogabili_app/ui/games/games_page.dart';
 import 'package:jogabili_app/ui/non_games/non_games_page.dart';
+import 'package:jogabili_app/ui/widgets/player_miniature_widget.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -23,31 +25,33 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => EpisodesBloc(
-            episodesRepository: context.read<EpisodesRepository>()),
-        child: BlocBuilder<EpisodesBloc, EpisodesState>(
-          builder: (context, state) {
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(_pageTitles[_currentPage]),
-              ),
-              backgroundColor: Colors.grey[200],
-              bottomNavigationBar: BottomNavigationBar(
-                onTap: (index) {
-                  return onTabTapped(index, context.read<EpisodesBloc>());
-                },
-                currentIndex: _currentPage,
-                items: [
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.videogame_asset), label: "Games"),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.wifi_tethering), label: "Não Games")
-                ],
-              ),
-              body: children[_currentPage],
-            );
-          },
-        ));
+    return BlocBuilder<PlayerBloc, PlayerState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(_pageTitles[_currentPage]),
+          ),
+          backgroundColor: Colors.grey[200],
+          bottomNavigationBar: BottomNavigationBar(
+            onTap: (index) {
+              return onTabTapped(index, context.read<EpisodesBloc>());
+            },
+            currentIndex: _currentPage,
+            items: [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.videogame_asset), label: "Games"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.wifi_tethering), label: "Não Games")
+            ],
+          ),
+          body: Stack(
+            children: [
+              children[_currentPage],
+              Align(alignment: Alignment.bottomCenter, child: PlayerMiniature())
+            ],
+          ),
+        );
+      },
+    );
   }
 }

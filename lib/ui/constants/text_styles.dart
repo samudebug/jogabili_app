@@ -32,6 +32,14 @@ class TextStyles {
     return TextStyle(fontFamily: "Roboto", fontSize: 14, color: color);
   }
 
+  static TextStyle episodeTabTextStyle(color) {
+    return TextStyle(fontFamily: "Roboto", fontSize: 16, color: color);
+  }
+
+  static TextStyle episodeLongDescriptionTextStyle(color) {
+    return TextStyle(fontFamily: "Roboto", fontSize: 14, color: color);
+  }
+
   static TextStyle episodeTitlePlayerTextStyle(color) {
     return TextStyle(
         fontFamily: "Roboto",
