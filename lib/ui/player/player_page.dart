@@ -1,11 +1,9 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:episodes_repository/episodes_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jogabili_app/blocs/player/player_bloc.dart';
 import 'package:jogabili_app/ui/constants/text_styles.dart';
 import 'package:marquee/marquee.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PlayerPage extends StatefulWidget {
@@ -42,11 +40,6 @@ class _PlayerPageState extends State<PlayerPage> {
   }
 
   void setBgColor() async {
-    Color newBgColor = (await PaletteGenerator.fromImageProvider(
-            NetworkImage(episode.imageUrl!)))
-        .dominantColor!
-        .color;
-
     setState(() {
       colorForTheme =
           ThemeData.estimateBrightnessForColor(bgColor) == Brightness.light

@@ -1,6 +1,5 @@
 import 'package:api_repository/api_repository.dart';
 import 'package:episodes_repository/src/models/episode.dart';
-import 'package:meta/meta.dart';
 
 class EpisodesActionFailed implements Exception {}
 
@@ -11,7 +10,7 @@ class EpisodesRepository {
     try {
       List<Episode> result = [];
       List<dynamic> apiResponse = await apiRepository.performGet(
-          'https://68fc-177-66-113-212.ngrok.io/episodes/games?page=$page');
+          'https://ae20-177-66-113-212.ngrok.io/episodes/games?page=$page');
       result = apiResponse.map((e) => Episode.fromJson(e)).toList();
       return result;
     } catch (e) {
@@ -24,7 +23,7 @@ class EpisodesRepository {
     try {
       List<Episode> result = [];
       List<dynamic> apiResponse = await apiRepository.performGet(
-          'https://68fc-177-66-113-212.ngrok.io/episodes/non-games?page=$page');
+          'https://ae20-177-66-113-212.ngrok.io/episodes/non-games?page=$page');
       result = apiResponse.map((e) => Episode.fromJson(e)).toList();
       return result;
     } on Exception {

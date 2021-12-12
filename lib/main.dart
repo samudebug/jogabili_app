@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:api_repository/api_repository.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:episodes_repository/episodes_repository.dart';
@@ -7,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jogabili_app/handlers/audio_player_handler.dart';
 import 'package:jogabili_app/ui/home_page.dart';
-import 'package:jogabili_app/ui/player/player_page.dart';
-
 import 'blocs/episodes/episodes_bloc.dart';
 import 'blocs/player/player_bloc.dart';
 

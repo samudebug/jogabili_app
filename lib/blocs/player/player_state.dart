@@ -37,6 +37,5 @@ class PlayerPlaying extends PlayerState {
   }
 
   @override
-  // TODO: implement props
   List<Object> get props => [position, duration, isPlaying, bgColor, episode];
 }

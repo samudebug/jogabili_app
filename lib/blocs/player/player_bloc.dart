@@ -1,12 +1,9 @@
 import 'dart:async';
-
-import 'package:audio_service/audio_service.dart';
 import 'package:bloc/bloc.dart';
 import 'package:episodes_repository/episodes_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:jogabili_app/handlers/audio_player_handler.dart';
-import 'package:just_audio/just_audio.dart';
 
 part 'player_event.dart';
 part 'player_state.dart';

@@ -13,7 +13,6 @@ class PlayerPlay extends PlayerEvent {
   const PlayerPlay(this.episode, this.color);
 
   @override
-  // TODO: implement props
   List<Object> get props => [episode, color];
 }
 
@@ -24,7 +23,6 @@ class PlayerLoaded extends PlayerEvent {
   const PlayerLoaded(this.duration, this.episode, this.color);
 
   @override
-  // TODO: implement props
   List<Object> get props => [this.duration, this.episode, this.color];
 }
 
@@ -36,7 +34,6 @@ class PlayerJump extends PlayerEvent {
   const PlayerJump(this.position);
 
   @override
-  // TODO: implement props
   List<Object> get props => [this.position];
 }
 
