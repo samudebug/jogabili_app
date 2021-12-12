@@ -27,8 +27,8 @@ class PodcastAudioHandler extends BaseAudioHandler {
     playbackState.add(playbackState.value.copyWith(
         playing: true,
         controls: [
-          MediaControl.pause,
           MediaControl.rewind,
+          MediaControl.pause,
           MediaControl.fastForward,
         ],
         systemActions: {MediaAction.seek},
@@ -41,8 +41,8 @@ class PodcastAudioHandler extends BaseAudioHandler {
     playbackState.add(playbackState.value.copyWith(
       playing: false,
       controls: [
-        MediaControl.play,
         MediaControl.rewind,
+        MediaControl.play,
         MediaControl.fastForward,
       ],
       systemActions: {MediaAction.seek},
@@ -70,7 +70,8 @@ class PodcastAudioHandler extends BaseAudioHandler {
     return length;
   }
 
-  bool get playing => _player.playing;
+  bool get playing => playbackState.value.playing;
 
+  Stream<bool> get playingStream => _player.playingStream;
   Stream<Duration> get positionStream => _player.positionStream;
 }

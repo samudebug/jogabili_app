@@ -278,7 +278,7 @@ class _PlayerPageState extends State<PlayerPage> {
                     style: TextStyles.episodeLengthTextStyle(colorForTheme),
                   ),
                   Text(
-                    "${duration.inHours}:${duration.inMinutes.remainder(60)}:${(duration.inSeconds.remainder(60))}",
+                    "${duration.inHours}:${fullNumber(duration.inMinutes.remainder(60))}:${fullNumber(duration.inSeconds.remainder(60))}",
                     style: TextStyles.episodeLengthTextStyle(colorForTheme),
                   )
                 ],
@@ -354,14 +354,21 @@ class _PlayerPageState extends State<PlayerPage> {
                             color: colorForTheme,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(50))),
-                        child: IconButton(
-                            onPressed: () {
-                              context.read<PlayerBloc>().add(PlayerSwitch());
-                            },
-                            icon: Icon(
-                              state.isPlaying ? Icons.pause : Icons.play_arrow,
-                              color: reverseColorForTheme,
-                            )),
+                        child: StreamBuilder<bool>(
+                          stream: state.playingStream,
+                          builder: (context, snapshot) => IconButton(
+                              onPressed: () {
+                                context.read<PlayerBloc>().add(PlayerSwitch());
+                              },
+                              icon: Icon(
+                                snapshot.data == null
+                                    ? Icons.play_arrow
+                                    : snapshot.data!
+                                        ? Icons.pause
+                                        : Icons.play_arrow,
+                                color: reverseColorForTheme,
+                              )),
+                        ),
                       ),
                     ),
                     Padding(

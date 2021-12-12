@@ -40,15 +40,18 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
           .add(_handler.playbackState.value.copyWith(updatePosition: position));
     });
     return PlayerPlaying(_handler.positionStream, event.duration,
-        _handler.playing, event.color, event.episode);
+        _handler.playingStream, _handler.playing, event.color, event.episode);
   }
 
   PlayerState mapPlayerSwitchLoadedToState() {
     if (state is PlayerPlaying) {
-      if ((state as PlayerPlaying).isPlaying)
+      if ((state as PlayerPlaying).isPlaying) {
         _handler.pause();
-      else
+        return (state as PlayerPlaying).copyWith(isPlaying: false);
+      } else {
         _handler.play();
+        return (state as PlayerPlaying).copyWith(isPlaying: true);
+      }
     }
     return (state as PlayerPlaying).copyWith(isPlaying: _handler.playing);
   }
