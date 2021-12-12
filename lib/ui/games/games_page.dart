@@ -12,7 +12,7 @@ class GamesPage extends StatefulWidget {
 
 class _GamesPageState extends State<GamesPage> {
   final _scrollController = ScrollController();
-  EpisodesBloc _episodesBloc;
+  late EpisodesBloc _episodesBloc;
   @override
   void initState() {
     super.initState();

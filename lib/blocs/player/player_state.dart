@@ -23,11 +23,11 @@ class PlayerPlaying extends PlayerState {
       this.position, this.duration, this.isPlaying, this.bgColor, this.episode);
 
   PlayerPlaying copyWith(
-      {Stream<Duration> position,
-      Duration duration,
-      bool isPlaying,
-      Color color,
-      Episode episode}) {
+      {Stream<Duration>? position,
+      Duration? duration,
+      bool? isPlaying,
+      Color? color,
+      Episode? episode}) {
     return PlayerPlaying(
         position ?? this.position,
         duration ?? this.duration,

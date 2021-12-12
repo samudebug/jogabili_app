@@ -9,7 +9,7 @@ part 'episodes_event.dart';
 part 'episodes_state.dart';
 
 class EpisodesBloc extends Bloc<EpisodesEvent, EpisodesState> {
-  EpisodesBloc({@required this.episodesRepository})
+  EpisodesBloc({required this.episodesRepository})
       : assert(episodesRepository != null),
         super(EpisodesInitial());
 

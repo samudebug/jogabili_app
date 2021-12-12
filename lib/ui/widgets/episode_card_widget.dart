@@ -9,7 +9,7 @@ import 'package:palette_generator/palette_generator.dart';
 import '../constants/text_styles.dart';
 
 class EpisodeCard extends StatelessWidget {
-  EpisodeCard({@required this.episode});
+  EpisodeCard({required this.episode});
 
   final Episode episode;
   @override
@@ -60,21 +60,21 @@ class EpisodeCard extends StatelessWidget {
               onPressed: () {
                 var controller =
                     ExpandableController.of(context, required: true);
-                controller.toggle();
+                controller!.toggle();
               },
             ),
           ),
           Padding(
             padding: EdgeInsets.all(16),
             child: Text(
-              episode.title,
+              episode.title!,
               style: TextStyles.episodeBlackTitleStyle,
             ),
           ),
           Padding(
             padding: EdgeInsets.all(16),
             child: Text(
-              episode.description,
+              episode.description!,
               style: TextStyles.episodeDescriptionTextStyle,
             ),
           )
@@ -104,7 +104,7 @@ class EpisodeCard extends StatelessWidget {
               onPressed: () {
                 var controller =
                     ExpandableController.of(context, required: true);
-                controller.toggle();
+                controller!.toggle();
               },
             ),
           )
@@ -121,7 +121,7 @@ class EpisodeCard extends StatelessWidget {
           Expanded(
             flex: 9,
             child: Text(
-              episode.subTitle,
+              episode.subTitle!,
               style: TextStyles.subTitleTextStyle,
             ),
           ),
@@ -150,7 +150,7 @@ class EpisodeCard extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.all(6),
                   child: Text(
-                    episode.pubDate,
+                    episode.pubDate!,
                     style: TextStyles.dateTextStyle,
                   ),
                 )
@@ -189,8 +189,8 @@ class EpisodeCard extends StatelessWidget {
                   onPressed: () async {
                     Color newBgColor =
                         (await PaletteGenerator.fromImageProvider(
-                                NetworkImage(episode.imageUrl)))
-                            .dominantColor
+                                NetworkImage(episode.imageUrl!)))
+                            .dominantColor!
                             .color;
                     context
                         .read<PlayerBloc>()
@@ -230,7 +230,8 @@ class EpisodeCard extends StatelessWidget {
                       topLeft: Radius.circular(5),
                       topRight: Radius.circular(5)),
                   image: DecorationImage(
-                      fit: BoxFit.fill, image: NetworkImage(episode.imageUrl))),
+                      fit: BoxFit.fill,
+                      image: NetworkImage(episode.imageUrl!))),
             ),
           ),
           Align(
@@ -244,7 +245,7 @@ class EpisodeCard extends StatelessWidget {
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
                       colors: [Colors.black, Colors.transparent])),
-              child: Text(episode.title,
+              child: Text(episode.title!,
                   style: TextStyles.episodeTitleStyle,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.start),

@@ -14,11 +14,12 @@ class EpisodesLoading extends EpisodesState {}
 class EpisodesUpdating extends EpisodesState {}
 
 class EpisodesReady extends EpisodesState {
-  const EpisodesReady({this.episodes, this.hasReachedMax = false});
+  const EpisodesReady({required this.episodes, this.hasReachedMax = false});
   final List<Episode> episodes;
   final bool hasReachedMax;
 
-  EpisodesReady copyWith({List<Episode> episodes, bool hasReachedMax = false}) {
+  EpisodesReady copyWith(
+      {List<Episode>? episodes, bool? hasReachedMax = false}) {
     return EpisodesReady(
         episodes: episodes ?? this.episodes,
         hasReachedMax: hasReachedMax ?? this.hasReachedMax);

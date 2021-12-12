@@ -6,7 +6,7 @@ import 'package:jogabili_app/ui/player/player_page.dart';
 import 'package:marquee/marquee.dart';
 
 class PlayerMiniature extends StatelessWidget {
-  const PlayerMiniature({Key key}) : super(key: key);
+  const PlayerMiniature({Key? key}) : super(key: key);
 
   static final Color lightColor = Color(0xFF000000);
   static final Color darkColor = Color(0xFFFFFFFF);
@@ -29,7 +29,7 @@ class PlayerMiniature extends StatelessWidget {
           },
           child: Container(
             height: 80,
-            decoration: BoxDecoration(color: state.bgColor ?? Colors.white),
+            decoration: BoxDecoration(color: state.bgColor),
             child: Row(
               children: [
                 Expanded(
@@ -40,7 +40,7 @@ class PlayerMiniature extends StatelessWidget {
                       height: 60,
                       decoration: BoxDecoration(
                           image: DecorationImage(
-                              image: NetworkImage(state.episode.imageUrl))),
+                              image: NetworkImage(state.episode.imageUrl!))),
                     ),
                   ),
                 ),
@@ -49,7 +49,7 @@ class PlayerMiniature extends StatelessWidget {
                     child: Container(
                       height: 80,
                       child: Marquee(
-                        text: state.episode.title,
+                        text: state.episode.title!,
                         style: TextStyles.episodeTabTextStyle(
                             state.bgColor != null
                                 ? ThemeData.estimateBrightnessForColor(

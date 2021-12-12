@@ -1,36 +1,45 @@
 import 'dart:convert';
 
 import 'package:api_repository/api_repository.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:episodes_repository/episodes_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jogabili_app/handlers/audio_player_handler.dart';
 import 'package:jogabili_app/ui/home_page.dart';
 import 'package:jogabili_app/ui/player/player_page.dart';
 
 import 'blocs/episodes/episodes_bloc.dart';
 import 'blocs/player/player_bloc.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   const apiRepository = APIRepository();
   EpisodesRepository episodesRepository =
       EpisodesRepository(apiRepository: apiRepository);
-
+  final PodcastAudioHandler audioHandler = await AudioService.init(
+      builder: () => PodcastAudioHandler(),
+      config: AudioServiceConfig(
+        androidNotificationChannelId: 'com.example.jogabili_app.channel.audio',
+        androidNotificationChannelName: 'Audio playback',
+        androidNotificationOngoing: true,
+      ));
   runApp(MyApp(
     apiRepository: apiRepository,
     episodesRepository: episodesRepository,
+    audioHandler: audioHandler,
   ));
 }
 
 class MyApp extends StatelessWidget {
   MyApp(
-      {Key key,
-      @required this.apiRepository,
-      @required this.episodesRepository})
-      : assert(apiRepository != null),
-        assert(episodesRepository != null);
+      {Key? key,
+      required this.apiRepository,
+      required this.episodesRepository,
+      required this.audioHandler});
   final APIRepository apiRepository;
   final EpisodesRepository episodesRepository;
+  final PodcastAudioHandler audioHandler;
 
   final Episode episode = Episode.fromJson(jsonDecode("""
   {
@@ -54,9 +63,10 @@ class MyApp extends StatelessWidget {
             BlocProvider(
                 create: (context) => EpisodesBloc(
                     episodesRepository: context.read<EpisodesRepository>())),
-            BlocProvider(create: (context) => PlayerBloc())
+            BlocProvider(create: (context) => PlayerBloc(audioHandler))
           ],
           child: MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: ThemeData(
               // This is the theme of your application.

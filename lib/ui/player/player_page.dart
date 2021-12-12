@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:episodes_repository/episodes_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +9,11 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PlayerPage extends StatefulWidget {
-  const PlayerPage({Key key, this.episode, this.playerBloc, this.bgColor})
+  const PlayerPage(
+      {Key? key,
+      required this.episode,
+      required this.playerBloc,
+      required this.bgColor})
       : super(key: key);
   final Episode episode;
   final PlayerBloc playerBloc;
@@ -26,8 +31,8 @@ class _PlayerPageState extends State<PlayerPage> {
   static final Color darkColor = Color(0xFFFFFFFF);
   final Color bgColor;
   Color colorForTheme = lightColor;
-  Color reverseColorForTheme;
-  Brightness appBarBrightness;
+  Color? reverseColorForTheme;
+  Brightness? appBarBrightness;
   double sliderValue = 5;
 
   @override
@@ -38,8 +43,8 @@ class _PlayerPageState extends State<PlayerPage> {
 
   void setBgColor() async {
     Color newBgColor = (await PaletteGenerator.fromImageProvider(
-            NetworkImage(episode.imageUrl)))
-        .dominantColor
+            NetworkImage(episode.imageUrl!)))
+        .dominantColor!
         .color;
 
     setState(() {
@@ -72,7 +77,7 @@ class _PlayerPageState extends State<PlayerPage> {
           title: Container(
             height: 50,
             child: Marquee(
-              text: episode.title,
+              text: episode.title!,
               style: TextStyles.episodeTitlePlayerTextStyle(colorForTheme),
               blankSpace: 20,
               startAfter: Duration(seconds: 3),
@@ -95,7 +100,7 @@ class _PlayerPageState extends State<PlayerPage> {
           child: Column(
             children: [
               Image(
-                image: NetworkImage(episode.imageUrl),
+                image: NetworkImage(episode.imageUrl!),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 50, bottom: 15),
@@ -111,7 +116,7 @@ class _PlayerPageState extends State<PlayerPage> {
                           builder: (context, snapshot) {
                             if (snapshot.hasData)
                               return Slider(
-                                value: snapshot.data.inSeconds.toDouble(),
+                                value: snapshot.data!.inSeconds.toDouble(),
                                 min: 0,
                                 max: state.duration.inSeconds.toDouble(),
                                 divisions:
@@ -181,7 +186,7 @@ class _PlayerPageState extends State<PlayerPage> {
       Container(
           child: Center(
         child: SingleChildScrollView(
-          child: Text(episode.longDescription,
+          child: Text(episode.longDescription!,
               style: TextStyles.episodeLongDescriptionTextStyle(colorForTheme)),
         ),
       )),
@@ -196,14 +201,14 @@ class _PlayerPageState extends State<PlayerPage> {
       ));
       content.add(Container(
           child: ListView.builder(
-        itemCount: episode.links.length,
+        itemCount: episode.links!.length,
         itemBuilder: (context, index) {
           return TextButton(
               onPressed: () {
-                launch(episode.links[index].linkUrl);
+                launch(episode.links![index].linkUrl!);
               },
               child: Text(
-                episode.links[index].title,
+                episode.links![index].title!,
                 textAlign: TextAlign.start,
               ));
         },
@@ -224,13 +229,14 @@ class _PlayerPageState extends State<PlayerPage> {
               return ListTile(
                   onTap: () {
                     context.read<PlayerBloc>().add(PlayerJump(
-                        timestampToDuration(episode.blocks[index].timeStamp)));
+                        timestampToDuration(
+                            episode.blocks![index].timeStamp!)));
                   },
                   title: Container(
                     height: 50,
                     child: Marquee(
                       text:
-                          "${episode.blocks[index].title} - ${episode.blocks[index].timeStamp} ",
+                          "${episode.blocks![index].title} - ${episode.blocks![index].timeStamp} ",
                       style: TextStyles.episodeTabTextStyle(colorForTheme),
                       blankSpace: 20,
                       startAfter: Duration(seconds: 3),
@@ -242,7 +248,7 @@ class _PlayerPageState extends State<PlayerPage> {
             separatorBuilder: (context, index) => Divider(
                   color: colorForTheme,
                 ),
-            itemCount: episode.blocks.length),
+            itemCount: episode.blocks!.length),
       )));
     }
 
@@ -275,7 +281,7 @@ class _PlayerPageState extends State<PlayerPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "${snapshot.data.inHours}:${fullNumber(snapshot.data.inMinutes.remainder(60))}:${fullNumber(snapshot.data.inSeconds.remainder(60))}",
+                    "${snapshot.data!.inHours}:${fullNumber(snapshot.data!.inMinutes.remainder(60))}:${fullNumber(snapshot.data!.inSeconds.remainder(60))}",
                     style: TextStyles.episodeLengthTextStyle(colorForTheme),
                   ),
                   Text(
@@ -338,7 +344,7 @@ class _PlayerPageState extends State<PlayerPage> {
                       child: IconButton(
                           onPressed: () {
                             context.read<PlayerBloc>().add(PlayerJump(Duration(
-                                seconds: snapshot.data.inSeconds - 5)));
+                                seconds: snapshot.data!.inSeconds - 5)));
                           },
                           icon: Icon(
                             Icons.fast_rewind,
@@ -370,7 +376,7 @@ class _PlayerPageState extends State<PlayerPage> {
                       child: IconButton(
                           onPressed: () {
                             context.read<PlayerBloc>().add(PlayerJump(Duration(
-                                seconds: snapshot.data.inSeconds + 5)));
+                                seconds: snapshot.data!.inSeconds + 5)));
                           },
                           icon: Icon(
                             Icons.fast_forward,
