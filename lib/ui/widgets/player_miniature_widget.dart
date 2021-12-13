@@ -65,19 +65,24 @@ class PlayerMiniature extends StatelessWidget {
                     )),
                 Expanded(
                     flex: 2,
-                    child: IconButton(
-                      onPressed: () {
-                        context.read<PlayerBloc>().add(PlayerSwitch());
-                      },
-                      icon: Icon(
-                        state.isPlaying ? Icons.pause : Icons.play_arrow,
-                        color: state.bgColor != null
-                            ? ThemeData.estimateBrightnessForColor(
-                                        state.bgColor) ==
-                                    Brightness.light
-                                ? lightColor
-                                : darkColor
-                            : lightColor,
+                    child: StreamBuilder<bool>(
+                      stream: state.playingStream,
+                      builder: (context, snapshot) => IconButton(
+                        onPressed: () {
+                          context.read<PlayerBloc>().add(PlayerSwitch());
+                        },
+                        icon: Icon(
+                          snapshot.data == null
+                              ? Icons.play_arrow
+                              : snapshot.data!
+                                  ? Icons.pause
+                                  : Icons.play_arrow,
+                          color: ThemeData.estimateBrightnessForColor(
+                                      state.bgColor) ==
+                                  Brightness.light
+                              ? lightColor
+                              : darkColor,
+                        ),
                       ),
                     ))
               ],
