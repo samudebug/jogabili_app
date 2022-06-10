@@ -1,9 +1,7 @@
-import 'package:episodes_repository/episodes_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:jogabili_app/blocs/episodes/episodes_bloc.dart';
 import 'package:jogabili_app/ui/widgets/episode_card_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jogabili_app/ui/widgets/player_miniature_widget.dart';
 
 class GamesPage extends StatefulWidget {
   @override
@@ -12,7 +10,7 @@ class GamesPage extends StatefulWidget {
 
 class _GamesPageState extends State<GamesPage> {
   final _scrollController = ScrollController();
-  EpisodesBloc _episodesBloc;
+  late EpisodesBloc _episodesBloc;
   @override
   void initState() {
     super.initState();

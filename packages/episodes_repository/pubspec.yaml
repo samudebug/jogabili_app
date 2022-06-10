@@ -1,11 +1,11 @@
 
 name: episodes_repository
 description: Dart package to manage Episodes related actions
-version: 1.0.0
+version: 1.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.11.0 <3.0.0"
+  sdk: ">=2.15.0 <3.0.0"
 
 dependencies:
   flutter:

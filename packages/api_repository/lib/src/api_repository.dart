@@ -10,12 +10,17 @@ class APIError implements Exception {
 class APIRepository {
   const APIRepository();
   Future<dynamic> performGet(String url) async {
-    http.Response response = await http.get(Uri.parse(url));
-    if (response.statusCode < 200 || response.statusCode >= 300) {
-      print('[API] Request: Get - Response Code: ${response.statusCode}');
-      print('[API] Request: Get -  Body: ${response.body}');
-      throw APIError(response.statusCode);
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        print('[API] Request: Get - Response Code: ${response.statusCode}');
+        print('[API] Request: Get -  Body: ${response.body}');
+        throw APIError(response.statusCode);
+      }
+      return jsonDecode(response.body);
+    } catch (e) {
+      print(e);
+      throw e;
     }
-    return jsonDecode(response.body);
   }
 }

@@ -28,7 +28,7 @@ class LoadEpisodesNonGames extends EpisodesEvent {
 }
 
 class EpisodesLoaded extends EpisodesEvent {
-  const EpisodesLoaded({this.episodes});
+  const EpisodesLoaded({required this.episodes});
   final List<Episode> episodes;
 
   @override

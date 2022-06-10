@@ -1,17 +1,16 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:episodes_repository/episodes_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:jogabili_app/handlers/audio_player_handler.dart';
 
 part 'player_event.dart';
 part 'player_state.dart';
 
 class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
-  AudioPlayer player = AudioPlayer();
-  PlayerBloc() : super(PlayerInitial());
+  late PodcastAudioHandler _handler;
+  PlayerBloc(this._handler) : super(PlayerInitial());
 
   @override
   Stream<PlayerState> mapEventToState(
@@ -36,30 +35,38 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   }
 
   PlayerState mapPlayerLoadedToState(PlayerLoaded event) {
-    return PlayerPlaying(player.positionStream, event.duration, player.playing,
-        event.color, event.episode);
+    _handler.positionStream.listen((position) {
+      _handler.playbackState
+          .add(_handler.playbackState.value.copyWith(updatePosition: position));
+    });
+    return PlayerPlaying(_handler.positionStream, event.duration,
+        _handler.playingStream, _handler.playing, event.color, event.episode);
   }
 
   PlayerState mapPlayerSwitchLoadedToState() {
     if (state is PlayerPlaying) {
-      if ((state as PlayerPlaying).isPlaying)
-        player.pause();
-      else
-        player.play();
+      if ((state as PlayerPlaying).isPlaying) {
+        _handler.pause();
+        return (state as PlayerPlaying).copyWith(isPlaying: false);
+      } else {
+        _handler.play();
+        return (state as PlayerPlaying).copyWith(isPlaying: true);
+      }
     }
-    return (state as PlayerPlaying).copyWith(isPlaying: player.playing);
+    return (state as PlayerPlaying).copyWith(isPlaying: _handler.playing);
   }
 
   PlayerState mapPlayerJumpToState(PlayerJump event) {
-    player.seek(event.position);
+    _handler.seek(event.position);
     return state;
   }
 
   Future<void> playAudio(Episode episode, Color color) async {
     try {
-      Duration duration = await player.setUrl(episode.audioUrl);
-      player.play();
-      add(PlayerLoaded(duration, episode, color));
+      Duration? duration = await _handler.setUrl(
+          episode.audioUrl!, episode.imageUrl!, episode.title!);
+      _handler.play();
+      add(PlayerLoaded(duration!, episode, color));
     } catch (e) {
       print(e);
       add(PlayerFail());

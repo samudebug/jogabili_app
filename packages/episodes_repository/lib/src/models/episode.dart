@@ -1,16 +1,14 @@
-import 'dart:convert';
-
 class Episode {
-  String title;
-  String description;
-  String subTitle;
-  String imageUrl;
-  String pubDate;
-  String type;
-  String longDescription;
-  List<Link> links;
-  List<Block> blocks;
-  String audioUrl;
+  String? title;
+  String? description;
+  String? subTitle;
+  String? imageUrl;
+  String? pubDate;
+  String? type;
+  String? longDescription;
+  List<Link>? links;
+  List<Block>? blocks;
+  String? audioUrl;
 
   Episode(
       {this.title,
@@ -45,8 +43,8 @@ class Episode {
 }
 
 class Link {
-  String title;
-  String linkUrl;
+  String? title;
+  String? linkUrl;
 
   Link({this.title, this.linkUrl});
 
@@ -57,8 +55,8 @@ class Link {
 }
 
 class Block {
-  String timeStamp;
-  String title;
+  String? timeStamp;
+  String? title;
 
   Block({this.timeStamp, this.title});
 
