@@ -6,6 +6,7 @@ import 'package:jogabili_app/blocs/player/player_bloc.dart';
 import 'package:jogabili_app/ui/constants/text_styles.dart';
 import 'package:marquee/marquee.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:draggable_home/draggable_home.dart';
 
 class PlayerPage extends StatefulWidget {
   const PlayerPage(
@@ -34,6 +35,9 @@ class _PlayerPageState extends State<PlayerPage> {
   Brightness? appBarBrightness;
   double sliderValue = 5;
 
+  final controller = DraggableScrollableController();
+  bool isExpanded = false;
+
   @override
   void initState() {
     super.initState();
@@ -52,6 +56,19 @@ class _PlayerPageState extends State<PlayerPage> {
               ? darkColor
               : lightColor;
     });
+    controller.addListener(() {
+      print("Controller size ${controller.size}");
+      if (double.parse(controller.size.toStringAsFixed(2)) == 0.10) {
+        setState(() {
+          isExpanded = false;
+        });
+      }
+      if (double.parse(controller.size.toStringAsFixed(2)) == 0.90) {
+        setState(() {
+          isExpanded = true;
+        });
+      }
+    });
   }
 
   @override
@@ -67,17 +84,8 @@ class _PlayerPageState extends State<PlayerPage> {
         backgroundColor: bgColor,
         appBar: AppBar(
           backgroundColor: bgColor,
-          systemOverlayStyle: SystemUiOverlayStyle(statusBarBrightness: appBarBrightness),
-          title: Container(
-            height: 50,
-            child: Marquee(
-              text: episode.title!,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: colorForTheme),
-              blankSpace: 20,
-              startAfter: Duration(seconds: 3),
-              pauseAfterRound: Duration(seconds: 3),
-            ),
-          ),
+          systemOverlayStyle:
+              SystemUiOverlayStyle(statusBarBrightness: appBarBrightness),
           leading: IconButton(
             icon: Icon(
               Icons.keyboard_arrow_down,
@@ -91,77 +99,231 @@ class _PlayerPageState extends State<PlayerPage> {
         ),
         body: Padding(
           padding: EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Image(
-                image: NetworkImage(episode.imageUrl!),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 50, bottom: 15),
-                child: _mediaButtons(),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 15, bottom: 2),
-                child: BlocBuilder<PlayerBloc, PlayerState>(
-                  builder: (context, state) {
-                    if (state is PlayerPlaying)
-                      return StreamBuilder<Duration>(
-                          stream: state.position,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData)
+          child: LayoutBuilder(builder: (context, constraints) {
+            return ConstrainedBox(
+              constraints: constraints,
+              child: Stack(
+                children: [
+                  if (isExpanded)
+                    Positioned(
+                      top: 0,
+                      child: SizedBox(
+                        height: 0.1 * constraints.maxHeight,
+                        width: constraints.maxWidth,
+                        child: BlocBuilder<PlayerBloc, PlayerState>(
+                          builder: (context, state) {
+                            if (state is PlayerPlaying) {
+                              return Container(
+                                height: 80,
+                                decoration: BoxDecoration(color: state.bgColor),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 2,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Hero(
+                                          tag: "podcast_image",
+                                          child: Image(
+                                            image:
+                                                NetworkImage(episode.imageUrl!),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                        flex: 6,
+                                        child: Container(
+                                          height: 80,
+                                          child: Marquee(
+                                            text: state.episode.title!,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall
+                                                ?.copyWith(
+                                                    color: state.bgColor != null
+                                                        ? ThemeData.estimateBrightnessForColor(
+                                                                    state
+                                                                        .bgColor) ==
+                                                                Brightness.light
+                                                            ? lightColor
+                                                            : darkColor
+                                                        : lightColor),
+                                            blankSpace: 20,
+                                            startAfter: Duration(seconds: 3),
+                                            pauseAfterRound:
+                                                Duration(seconds: 3),
+                                          ),
+                                        )),
+                                    Expanded(
+                                        flex: 2,
+                                        child: StreamBuilder<bool>(
+                                          stream: state.playingStream,
+                                          builder: (context, snapshot) =>
+                                              IconButton(
+                                            onPressed: () {
+                                              context
+                                                  .read<PlayerBloc>()
+                                                  .add(PlayerSwitch());
+                                            },
+                                            icon: Icon(
+                                              snapshot.data == null
+                                                  ? Icons.play_arrow
+                                                  : snapshot.data!
+                                                      ? Icons.pause
+                                                      : Icons.play_arrow,
+                                              color: ThemeData
+                                                          .estimateBrightnessForColor(
+                                                              state.bgColor) ==
+                                                      Brightness.light
+                                                  ? lightColor
+                                                  : darkColor,
+                                            ),
+                                          ),
+                                        ))
+                                  ],
+                                ),
+                              );
+                            }
+                            return Container();
+                          },
+                        ),
+                      ),
+                    )
+                  else
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Hero(
+                          tag: "podcast_image",
+                          child: Image(
+                            image: NetworkImage(episode.imageUrl!),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Container(
+                            height: 50,
+                            child: Marquee(
+                              text: episode.title!,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(color: colorForTheme),
+                              blankSpace: 20,
+                              startAfter: Duration(seconds: 3),
+                              pauseAfterRound: Duration(seconds: 3),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15, bottom: 2),
+                          child: BlocBuilder<PlayerBloc, PlayerState>(
+                            builder: (context, state) {
+                              if (state is PlayerPlaying)
+                                return StreamBuilder<Duration>(
+                                    stream: state.position,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData)
+                                        return Slider(
+                                          value: snapshot.data!.inSeconds
+                                              .toDouble(),
+                                          min: 0,
+                                          max: state.duration.inSeconds
+                                              .toDouble(),
+                                          divisions: state.duration.inSeconds
+                                                  .toDouble() ~/
+                                              5,
+                                          activeColor: colorForTheme,
+                                          inactiveColor:
+                                              colorForTheme.withAlpha(127),
+                                          onChanged: (value) {
+                                            context.read<PlayerBloc>().add(
+                                                PlayerJump(Duration(
+                                                    seconds: value.toInt())));
+                                          },
+                                        );
+                                      return Slider(
+                                        value: 0,
+                                        min: 0,
+                                        max: 0,
+                                        divisions: 5,
+                                        activeColor: colorForTheme,
+                                        inactiveColor:
+                                            colorForTheme.withAlpha(127),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            sliderValue = value;
+                                          });
+                                        },
+                                      );
+                                    });
                               return Slider(
-                                value: snapshot.data!.inSeconds.toDouble(),
+                                value: 0,
                                 min: 0,
-                                max: state.duration.inSeconds.toDouble(),
-                                divisions:
-                                    state.duration.inSeconds.toDouble() ~/ 5,
+                                max: 0,
+                                divisions: 5,
                                 activeColor: colorForTheme,
                                 inactiveColor: colorForTheme.withAlpha(127),
                                 onChanged: (value) {
-                                  context.read<PlayerBloc>().add(PlayerJump(
-                                      Duration(seconds: value.toInt())));
+                                  setState(() {
+                                    sliderValue = value;
+                                  });
                                 },
                               );
-                            return Slider(
-                              value: 0,
-                              min: 0,
-                              max: 0,
-                              divisions: 5,
-                              activeColor: colorForTheme,
-                              inactiveColor: colorForTheme.withAlpha(127),
-                              onChanged: (value) {
-                                setState(() {
-                                  sliderValue = value;
-                                });
-                              },
-                            );
-                          });
-                    return Slider(
-                      value: 0,
-                      min: 0,
-                      max: 0,
-                      divisions: 5,
-                      activeColor: colorForTheme,
-                      inactiveColor: colorForTheme.withAlpha(127),
-                      onChanged: (value) {
-                        setState(() {
-                          sliderValue = value;
-                        });
+                            },
+                          ),
+                        ),
+                        BlocBuilder<PlayerBloc, PlayerState>(
+                          builder: (context, state) {
+                            if (state is PlayerPlaying)
+                              return _lengthInfo(
+                                  state.position, state.duration);
+                            return _lengthInfoStatic();
+                          },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: _mediaButtons(),
+                        ),
+
+                        // _tabWidget(),
+                      ],
+                    ),
+                  Positioned.fill(
+                      child: SizedBox.expand(
+                    child: DraggableScrollableSheet(
+                      snap: true,
+                      controller: controller,
+                      minChildSize: 0.1,
+                      maxChildSize: 0.9,
+                      initialChildSize: 0.1,
+                      builder: (context, scrollController) {
+                        return SingleChildScrollView(
+                          controller: scrollController,
+                          child: Container(
+                              color: bgColor,
+                              height: 0.9 * constraints.maxHeight,
+                              width: double.infinity,
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    width: 50,
+                                    child: Divider(
+                                      thickness: 5,
+                                    ),
+                                  ),
+                                  _tabWidget()
+                                ],
+                              )),
+                        );
                       },
-                    );
-                  },
-                ),
+                    ),
+                  ))
+                ],
               ),
-              BlocBuilder<PlayerBloc, PlayerState>(
-                builder: (context, state) {
-                  if (state is PlayerPlaying)
-                    return _lengthInfo(state.position, state.duration);
-                  return _lengthInfoStatic();
-                },
-              ),
-              _tabWidget()
-            ],
-          ),
+            );
+          }),
         ),
       ),
     );
@@ -172,7 +334,10 @@ class _PlayerPageState extends State<PlayerPage> {
       Tab(
         child: Text(
           "Descrição",
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(color: colorForTheme),
+          style: Theme.of(context)
+              .textTheme
+              .titleSmall
+              ?.copyWith(color: colorForTheme),
         ),
       ),
     ];
@@ -181,7 +346,10 @@ class _PlayerPageState extends State<PlayerPage> {
           child: Center(
         child: SingleChildScrollView(
           child: Text(episode.longDescription!,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorForTheme)),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: colorForTheme)),
         ),
       )),
     ];
@@ -190,7 +358,10 @@ class _PlayerPageState extends State<PlayerPage> {
         child: Text(
           "Links",
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(color: colorForTheme),
+          style: Theme.of(context)
+              .textTheme
+              .titleSmall
+              ?.copyWith(color: colorForTheme),
         ),
       ));
       content.add(Container(
@@ -213,7 +384,10 @@ class _PlayerPageState extends State<PlayerPage> {
       tabs.add(Tab(
         child: Text(
           "Blocos",
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(color: colorForTheme),
+          style: Theme.of(context)
+              .textTheme
+              .titleSmall
+              ?.copyWith(color: colorForTheme),
         ),
       ));
       content.add(Container(
@@ -231,7 +405,10 @@ class _PlayerPageState extends State<PlayerPage> {
                     child: Marquee(
                       text:
                           "${episode.blocks![index].title} - ${episode.blocks![index].timeStamp} ",
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: colorForTheme),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(color: colorForTheme),
                       blankSpace: 20,
                       startAfter: Duration(seconds: 3),
                       pauseAfterRound: Duration(seconds: 3),
@@ -254,7 +431,16 @@ class _PlayerPageState extends State<PlayerPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                child: TabBar(tabs: tabs),
+                child: TabBar(
+                  tabs: tabs,
+                  onTap: ((value) {
+                    controller.animateTo(
+                      0.9,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeOutBack,
+                    );
+                  }),
+                ),
               ),
               Expanded(
                 child: TabBarView(children: content),
@@ -276,11 +462,17 @@ class _PlayerPageState extends State<PlayerPage> {
                 children: [
                   Text(
                     "${snapshot.data!.inHours}:${fullNumber(snapshot.data!.inMinutes.remainder(60))}:${fullNumber(snapshot.data!.inSeconds.remainder(60))}",
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorForTheme),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(color: colorForTheme),
                   ),
                   Text(
                     "${duration.inHours}:${fullNumber(duration.inMinutes.remainder(60))}:${fullNumber(duration.inSeconds.remainder(60))}",
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorForTheme),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(color: colorForTheme),
                   )
                 ],
               ),
@@ -292,11 +484,17 @@ class _PlayerPageState extends State<PlayerPage> {
               children: [
                 Text(
                   "0:00:00",
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorForTheme),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(color: colorForTheme),
                 ),
                 Text(
                   "0:00:00",
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorForTheme),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(color: colorForTheme),
                 )
               ],
             ),
@@ -312,11 +510,17 @@ class _PlayerPageState extends State<PlayerPage> {
         children: [
           Text(
             "0:00:00",
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorForTheme),
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                ?.copyWith(color: colorForTheme),
           ),
           Text(
             "0:00:00",
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorForTheme),
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                ?.copyWith(color: colorForTheme),
           )
         ],
       ),
@@ -445,5 +649,88 @@ class _PlayerPageState extends State<PlayerPage> {
   String fullNumber(int value) {
     if (value < 10) return "0$value";
     return value.toString();
+  }
+}
+
+class MiniPlayerExpanded extends StatelessWidget {
+  const MiniPlayerExpanded({
+    Key? key,
+    required this.bgColor,
+    required this.episode,
+    required this.lightColor,
+    required this.darkColor,
+  }) : super(key: key);
+
+  final Color bgColor;
+  final Episode episode;
+  final Color lightColor;
+  final Color darkColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PlayerBloc, PlayerState>(builder: (context, state) {
+      if (state is PlayerPlaying) {
+        return Container(
+          height: 80,
+          decoration: BoxDecoration(color: bgColor),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(episode.imageUrl!))),
+                  ),
+                ),
+              ),
+              Expanded(
+                  flex: 6,
+                  child: Container(
+                    height: 80,
+                    child: Marquee(
+                      text: episode.title!,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: bgColor != null
+                              ? ThemeData.estimateBrightnessForColor(bgColor) ==
+                                      Brightness.light
+                                  ? lightColor
+                                  : darkColor
+                              : lightColor),
+                      blankSpace: 20,
+                      startAfter: Duration(seconds: 3),
+                      pauseAfterRound: Duration(seconds: 3),
+                    ),
+                  )),
+              Expanded(
+                  flex: 2,
+                  child: StreamBuilder<bool>(
+                    stream: state.playingStream,
+                    builder: (context, snapshot) => IconButton(
+                      onPressed: () {
+                        context.read<PlayerBloc>().add(PlayerSwitch());
+                      },
+                      icon: Icon(
+                        snapshot.data == null
+                            ? Icons.play_arrow
+                            : snapshot.data!
+                                ? Icons.pause
+                                : Icons.play_arrow,
+                        color: ThemeData.estimateBrightnessForColor(bgColor) ==
+                                Brightness.light
+                            ? lightColor
+                            : darkColor,
+                      ),
+                    ),
+                  ))
+            ],
+          ),
+        );
+      }
+      return Container();
+    });
   }
 }

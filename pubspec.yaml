@@ -31,6 +31,7 @@ dependencies:
   url_launcher: ^6.0.9
   just_audio: ^0.9.18
   audio_service: ^0.18.2
+  draggable_home: ^1.0.5
   api_repository: 
     path: ./packages/api_repository
   episodes_repository:
