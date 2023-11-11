@@ -1,4 +1,5 @@
 class Episode {
+  String? category;
   String? title;
   String? description;
   String? subTitle;
@@ -29,6 +30,7 @@ class Episode {
     type = json['type'];
     longDescription = json['longDescription'];
     audioUrl = json['audioUrl'];
+    category = json['category'];
     if (json['links'] != null) {
       links = (json['links'] as List<dynamic>)
           .map((e) => Link.fromJson(e))

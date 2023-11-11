@@ -30,18 +30,24 @@ class _GamesPageState extends State<GamesPage> {
       if (state is EpisodesReady) {
         return Center(
           child: Container(
-            child: ListView.builder(
-              controller: _scrollController,
-              itemCount: state.hasReachedMax
-                  ? state.episodes.length
-                  : state.episodes.length + 1,
-              itemBuilder: (context, index) {
-                return index >= state.episodes.length
-                    ? BottomLoader()
-                    : EpisodeCard(
-                        episode: state.episodes[index],
-                      );
+            child: RefreshIndicator(
+              onRefresh: () async {
+                context.read<EpisodesBloc>().add(ClearEpisodes());
+                context.read<EpisodesBloc>().add(LoadEpisodesGames());
               },
+              child: ListView.builder(
+                controller: _scrollController,
+                itemCount: state.hasReachedMax
+                    ? state.episodes.length
+                    : state.episodes.length + 1,
+                itemBuilder: (context, index) {
+                  return index >= state.episodes.length
+                      ? BottomLoader()
+                      : EpisodeCard(
+                          episode: state.episodes[index],
+                        );
+                },
+              ),
             ),
           ),
         );

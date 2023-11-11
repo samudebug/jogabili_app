@@ -28,9 +28,10 @@ class _HomePageState extends State<HomePage> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
+            backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
             title: Text(_pageTitles[_currentPage]),
           ),
-          backgroundColor: Colors.grey[200],
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           bottomNavigationBar: BottomNavigationBar(
             onTap: (index) {
               return onTabTapped(index, context.read<EpisodesBloc>());

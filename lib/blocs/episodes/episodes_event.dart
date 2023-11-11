@@ -10,6 +10,8 @@ abstract class EpisodesEvent extends Equatable {
 
 class LoadNewPage extends EpisodesEvent {}
 
+class ClearEpisodes extends EpisodesEvent {}
+
 class LoadEpisodesGames extends EpisodesEvent {
   const LoadEpisodesGames({this.page = 1});
   final int page;

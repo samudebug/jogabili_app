@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:jogabili_app/blocs/episodes/episodes_bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jogabili_app/ui/widgets/episode_card_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class NonGamesPage extends StatefulWidget {
+class EpisodesPage extends StatefulWidget {
+  
   @override
-  _NonGamesPageState createState() => _NonGamesPageState();
+  _EpisodesPageState createState() => _EpisodesPageState();
 }
 
-class _NonGamesPageState extends State<NonGamesPage> {
+class _EpisodesPageState extends State<EpisodesPage> {
   final _scrollController = ScrollController();
   late EpisodesBloc _episodesBloc;
   @override
@@ -16,7 +17,7 @@ class _NonGamesPageState extends State<NonGamesPage> {
     super.initState();
     _scrollController.addListener(_onScroll);
     _episodesBloc = context.read<EpisodesBloc>();
-    _episodesBloc.add(LoadEpisodesNonGames());
+    _episodesBloc.add(LoadEpisodesGames());
   }
 
   @override
@@ -33,7 +34,7 @@ class _NonGamesPageState extends State<NonGamesPage> {
             child: RefreshIndicator(
               onRefresh: () async {
                 context.read<EpisodesBloc>().add(ClearEpisodes());
-                context.read<EpisodesBloc>().add(LoadEpisodesNonGames());
+                context.read<EpisodesBloc>().add(LoadEpisodesGames());
               },
               child: ListView.builder(
                 controller: _scrollController,
@@ -63,7 +64,9 @@ class _NonGamesPageState extends State<NonGamesPage> {
   }
 
   void _onScroll() {
-    if (_isBottom) _episodesBloc.add(LoadEpisodesNonGames());
+    if (_isBottom) {
+      _episodesBloc.add(LoadEpisodesGames());
+    }
   }
 
   bool get _isBottom {

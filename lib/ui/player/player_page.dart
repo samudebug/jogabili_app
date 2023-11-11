@@ -1,5 +1,6 @@
 import 'package:episodes_repository/episodes_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jogabili_app/blocs/player/player_bloc.dart';
 import 'package:jogabili_app/ui/constants/text_styles.dart';
@@ -66,12 +67,12 @@ class _PlayerPageState extends State<PlayerPage> {
         backgroundColor: bgColor,
         appBar: AppBar(
           backgroundColor: bgColor,
-          brightness: appBarBrightness,
+          systemOverlayStyle: SystemUiOverlayStyle(statusBarBrightness: appBarBrightness),
           title: Container(
             height: 50,
             child: Marquee(
               text: episode.title!,
-              style: TextStyles.episodeTitlePlayerTextStyle(colorForTheme),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: colorForTheme),
               blankSpace: 20,
               startAfter: Duration(seconds: 3),
               pauseAfterRound: Duration(seconds: 3),
@@ -171,7 +172,7 @@ class _PlayerPageState extends State<PlayerPage> {
       Tab(
         child: Text(
           "Descrição",
-          style: TextStyles.episodeTabTextStyle(colorForTheme),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(color: colorForTheme),
         ),
       ),
     ];
@@ -180,7 +181,7 @@ class _PlayerPageState extends State<PlayerPage> {
           child: Center(
         child: SingleChildScrollView(
           child: Text(episode.longDescription!,
-              style: TextStyles.episodeLongDescriptionTextStyle(colorForTheme)),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorForTheme)),
         ),
       )),
     ];
@@ -189,7 +190,7 @@ class _PlayerPageState extends State<PlayerPage> {
         child: Text(
           "Links",
           overflow: TextOverflow.ellipsis,
-          style: TextStyles.episodeTabTextStyle(colorForTheme),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(color: colorForTheme),
         ),
       ));
       content.add(Container(
@@ -198,7 +199,7 @@ class _PlayerPageState extends State<PlayerPage> {
         itemBuilder: (context, index) {
           return TextButton(
               onPressed: () {
-                launch(episode.links![index].linkUrl!);
+                launchUrl(Uri.parse(episode.links![index].linkUrl!));
               },
               child: Text(
                 episode.links![index].title!,
@@ -212,7 +213,7 @@ class _PlayerPageState extends State<PlayerPage> {
       tabs.add(Tab(
         child: Text(
           "Blocos",
-          style: TextStyles.episodeTabTextStyle(colorForTheme),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(color: colorForTheme),
         ),
       ));
       content.add(Container(
@@ -230,7 +231,7 @@ class _PlayerPageState extends State<PlayerPage> {
                     child: Marquee(
                       text:
                           "${episode.blocks![index].title} - ${episode.blocks![index].timeStamp} ",
-                      style: TextStyles.episodeTabTextStyle(colorForTheme),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: colorForTheme),
                       blankSpace: 20,
                       startAfter: Duration(seconds: 3),
                       pauseAfterRound: Duration(seconds: 3),
@@ -275,11 +276,11 @@ class _PlayerPageState extends State<PlayerPage> {
                 children: [
                   Text(
                     "${snapshot.data!.inHours}:${fullNumber(snapshot.data!.inMinutes.remainder(60))}:${fullNumber(snapshot.data!.inSeconds.remainder(60))}",
-                    style: TextStyles.episodeLengthTextStyle(colorForTheme),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorForTheme),
                   ),
                   Text(
                     "${duration.inHours}:${fullNumber(duration.inMinutes.remainder(60))}:${fullNumber(duration.inSeconds.remainder(60))}",
-                    style: TextStyles.episodeLengthTextStyle(colorForTheme),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorForTheme),
                   )
                 ],
               ),
@@ -291,11 +292,11 @@ class _PlayerPageState extends State<PlayerPage> {
               children: [
                 Text(
                   "0:00:00",
-                  style: TextStyles.episodeLengthTextStyle(colorForTheme),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorForTheme),
                 ),
                 Text(
                   "0:00:00",
-                  style: TextStyles.episodeLengthTextStyle(colorForTheme),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorForTheme),
                 )
               ],
             ),
@@ -311,11 +312,11 @@ class _PlayerPageState extends State<PlayerPage> {
         children: [
           Text(
             "0:00:00",
-            style: TextStyles.episodeLengthTextStyle(colorForTheme),
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorForTheme),
           ),
           Text(
             "0:00:00",
-            style: TextStyles.episodeLengthTextStyle(colorForTheme),
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: colorForTheme),
           )
         ],
       ),

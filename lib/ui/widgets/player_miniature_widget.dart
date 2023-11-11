@@ -50,8 +50,7 @@ class PlayerMiniature extends StatelessWidget {
                       height: 80,
                       child: Marquee(
                         text: state.episode.title!,
-                        style: TextStyles.episodeTabTextStyle(
-                            state.bgColor != null
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(color: state.bgColor != null
                                 ? ThemeData.estimateBrightnessForColor(
                                             state.bgColor) ==
                                         Brightness.light

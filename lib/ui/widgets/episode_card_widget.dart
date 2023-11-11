@@ -46,16 +46,16 @@ class EpisodeCard extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
-            child: bannerAndTitle(),
+            child: bannerAndTitle(context),
           ),
           Padding(
               padding: EdgeInsets.only(bottom: 8), child: dateAndPlay(context)),
-          subTitleWidget(),
+          subTitleWidget(context),
           Center(
             child: IconButton(
               icon: Icon(
                 Icons.keyboard_arrow_up,
-                color: Color(0x80000000),
+                color: Theme.of(context).iconTheme.color,
               ),
               onPressed: () {
                 var controller =
@@ -68,14 +68,14 @@ class EpisodeCard extends StatelessWidget {
             padding: EdgeInsets.all(16),
             child: Text(
               episode.title!,
-              style: TextStyles.episodeBlackTitleStyle,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
           Padding(
             padding: EdgeInsets.all(16),
             child: Text(
               episode.description!,
-              style: TextStyles.episodeDescriptionTextStyle,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
           )
         ],
@@ -90,16 +90,16 @@ class EpisodeCard extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
-            child: bannerAndTitle(),
+            child: bannerAndTitle(context),
           ),
           Padding(
               padding: EdgeInsets.only(bottom: 8), child: dateAndPlay(context)),
-          subTitleWidget(),
+          subTitleWidget(context),
           Center(
             child: IconButton(
               icon: Icon(
                 Icons.keyboard_arrow_down,
-                color: Color(0x80000000),
+                color: Theme.of(context).iconTheme.color,
               ),
               onPressed: () {
                 var controller =
@@ -113,7 +113,7 @@ class EpisodeCard extends StatelessWidget {
     );
   }
 
-  Padding subTitleWidget() {
+  Padding subTitleWidget(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -122,7 +122,7 @@ class EpisodeCard extends StatelessWidget {
             flex: 9,
             child: Text(
               episode.subTitle!,
-              style: TextStyles.subTitleTextStyle,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),
         ],
@@ -138,22 +138,30 @@ class EpisodeCard extends StatelessWidget {
         children: [
           Container(
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: EdgeInsets.all(6),
-                  child: Icon(
-                    Icons.calendar_today,
-                    size: 14,
-                    color: ColorsConstants.dateColor,
+                Container(
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(6),
+                        child: Icon(
+                          Icons.calendar_today,
+                          size: 14,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(6),
+                        child: Text(
+                          episode.pubDate!,
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                      )
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(6),
-                  child: Text(
-                    episode.pubDate!,
-                    style: TextStyles.dateTextStyle,
-                  ),
-                )
+                Text(episode.category!, style: Theme.of(context).textTheme.titleSmall,)
               ],
             ),
           ),
@@ -214,7 +222,7 @@ class EpisodeCard extends StatelessWidget {
     );
   }
 
-  Container bannerAndTitle() {
+  Container bannerAndTitle(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
@@ -246,7 +254,7 @@ class EpisodeCard extends StatelessWidget {
                       end: Alignment.topCenter,
                       colors: [Colors.black, Colors.transparent])),
               child: Text(episode.title!,
-                  style: TextStyles.episodeTitleStyle,
+                  style: Theme.of(context).textTheme.titleLarge,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.start),
             ),

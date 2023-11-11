@@ -10,7 +10,7 @@ class EpisodesRepository {
     try {
       List<Episode> result = [];
       List<dynamic> apiResponse = await apiRepository.performGet(
-          'https://241e-177-66-113-212.ngrok.io/episodes/games?page=$page');
+          'http://192.168.1.13:3000/episodes/games?page=$page');
       result = apiResponse.map((e) => Episode.fromJson(e)).toList();
       return result;
     } catch (e) {
@@ -23,7 +23,7 @@ class EpisodesRepository {
     try {
       List<Episode> result = [];
       List<dynamic> apiResponse = await apiRepository.performGet(
-          'https://241e-177-66-113-212.ngrok.io/episodes/non-games?page=$page');
+          'http://192.168.1.13:3000/episodes/non-games?page=$page');
       result = apiResponse.map((e) => Episode.fromJson(e)).toList();
       return result;
     } on Exception {

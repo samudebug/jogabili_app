@@ -31,7 +31,7 @@ class PodcastAudioHandler extends BaseAudioHandler {
           MediaControl.pause,
           MediaControl.fastForward,
         ],
-        systemActions: {MediaAction.seek},
+        systemActions: {MediaAction.seek, MediaAction.rewind, MediaAction.fastForward},
         processingState: AudioProcessingState.ready));
     return _player.play();
   }
@@ -45,7 +45,7 @@ class PodcastAudioHandler extends BaseAudioHandler {
         MediaControl.play,
         MediaControl.fastForward,
       ],
-      systemActions: {MediaAction.seek},
+      systemActions: {MediaAction.seek, MediaAction.rewind, MediaAction.fastForward},
     ));
     return _player.pause();
   }
@@ -57,7 +57,8 @@ class PodcastAudioHandler extends BaseAudioHandler {
       MediaControl.rewind,
       MediaControl.fastForward,
     ], systemActions: {
-      MediaAction.seek
+      MediaAction.seek,
+      MediaAction.rewind, MediaAction.fastForward
     }, processingState: AudioProcessingState.loading));
     Duration? length = await _player.setUrl(url);
     MediaItem newItem = MediaItem(

@@ -22,8 +22,16 @@ class EpisodesBloc extends Bloc<EpisodesEvent, EpisodesState> {
     } else if (event is LoadEpisodesNonGames) {
       yield await _fetchNonGamesEpisodes(state);
     } else if (event is LoadNewPage) {
+      add(ClearEpisodes());
       yield EpisodesLoading();
+    } else if (event is ClearEpisodes) {
+      yield _clearEpisodes(state);
     }
+  }
+
+  EpisodesState _clearEpisodes(EpisodesState state) {
+      return EpisodesInitial();
+    
   }
 
   Future<EpisodesState> _fetchEpisodesGames(EpisodesState state) async {
